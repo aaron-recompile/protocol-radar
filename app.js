@@ -7,6 +7,8 @@ import { HTTPFacilitatorClient } from "@x402/core/server";
 import { declareDiscoveryExtension, bazaarResourceServerExtension } from "@x402/extensions/bazaar";
 import { facilitator } from "@coinbase/x402";
 import { PRODUCTS } from "./lib/products.js";
+import { RELATED } from "./lib/related.js";
+const OTHERS = RELATED.filter((r) => !r.url.includes("protocol-radar"));
 
 export const PAY_TO = "0x4b5887B6E399C2E104becd01f7c406229c15891d";
 export const MAKER = { name: "Aaron Zhang", role: "independent developer", url: "https://farcaster.xyz/aaronzhang" };
@@ -14,7 +16,7 @@ export const SERVICE_NAME = "Protocol Radar - Aaron Zhang"; // Bazaar serviceNam
 const NETWORKS = (process.env.X402_NETWORKS || "eip155:84532").split(",");
 const SERVICE = {
   name: "Protocol Radar by Aaron Zhang",
-  summary: "Live, machine-read status of the protocols and software agents depend on: Ethereum client releases, AI agent framework releases, x402 protocol updates. Read directly from GitHub and npm, cached up to 6 hours, never rewritten by a model.",
+  summary: "Live, machine-read status of the protocols and software agents depend on: Ethereum client releases, EIP status, AI agent framework releases, x402 protocol updates. Read directly from GitHub and npm, cached up to 6 hours, never rewritten by a model.",
   maker: `Built and maintained by ${MAKER.name}, an ${MAKER.role}.`,
 };
 
@@ -64,7 +66,7 @@ const catalog = () => PRODUCTS.map(({ path, price, tags, description }) => ({ pa
 
 app.get("/", (req, res) => res.send({ service: SERVICE.name, maker: MAKER, what: SERVICE.summary,
   pay: { protocol: "x402", asset: "USDC", networks: NETWORKS }, paid: catalog(), free: ["/catalog"],
-  discovery: ["/llms.txt", "/.well-known/x402", "/openapi.json", "/agents.json"] }));
+  discovery: ["/llms.txt", "/.well-known/x402", "/openapi.json", "/agents.json"], more_from_this_developer: OTHERS }));
 app.get("/catalog", (req, res) => res.send(catalog()));
 
 app.get("/.well-known/x402", (req, res) => {
@@ -74,7 +76,8 @@ app.get("/.well-known/x402", (req, res) => {
     rails: NETWORKS.map((network) => ({ rail: "x402", version: 2, scheme: "exact", network, asset: "USDC", how: howToPay })),
     payTo: PAY_TO,
     resources: [{ resource: `${o}/catalog`, method: "GET", description: "Free catalog of paid datasets.", priceUsd: 0, free: true },
-      ...PRODUCTS.map((p) => ({ resource: `${o}${p.path}`, method: "GET", description: p.description, priceUsd: Number(p.price), free: false, networks: NETWORKS, tags: p.tags }))] });
+      ...PRODUCTS.map((p) => ({ resource: `${o}${p.path}`, method: "GET", description: p.description, priceUsd: Number(p.price), free: false, networks: NETWORKS, tags: p.tags }))],
+    related_services: OTHERS });
 });
 app.get("/openapi.json", (req, res) => {
   const o = origin(req);
@@ -107,6 +110,9 @@ ${PRODUCTS.map((p) => `- [${p.path}](${o}${p.path}): ${p.description}`).join("\n
 ${howToPay}
 Networks: ${NETWORKS.join(", ")} (USDC). Pay to ${PAY_TO}.
 
+## More from this developer
+${OTHERS.map((r) => `- [${r.name}](${r.url}/llms.txt): ${r.what}`).join("\n")}
+
 ## Machine-readable
 - [x402 manifest](${o}/.well-known/x402)
 - [OpenAPI](${o}/openapi.json)
@@ -118,7 +124,7 @@ app.get("/agents.json", (req, res) => {
   res.send({ name: SERVICE.name, description: SERVICE.summary, provider: MAKER, url: o,
     auth: { type: "x402", networks: NETWORKS, asset: "USDC", payTo: PAY_TO },
     capabilities: PRODUCTS.map((p) => ({ id: p.path.slice(1).replace(/\//g, "_"), description: p.description, method: "GET", url: `${o}${p.path}`, priceUsd: Number(p.price), tags: p.tags })),
-    docs: { llms: `${o}/llms.txt`, openapi: `${o}/openapi.json`, x402: `${o}/.well-known/x402` } });
+    docs: { llms: `${o}/llms.txt`, openapi: `${o}/openapi.json`, x402: `${o}/.well-known/x402` }, related_services: OTHERS });
 });
 app.get("/icon.svg", (req, res) => res.type("image/svg+xml").send(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="12" fill="#0f2a2a"/><circle cx="32" cy="32" r="18" fill="none" stroke="#3ee0c0" stroke-width="4"/><circle cx="32" cy="32" r="6" fill="#3ee0c0"/></svg>`));
 app.get("/robots.txt", (req, res) => res.type("text/plain").send(`User-agent: *\nAllow: /\n\n# Agents: start at ${origin(req)}/llms.txt\n`));
