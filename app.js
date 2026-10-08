@@ -8,6 +8,7 @@ import { declareDiscoveryExtension, bazaarResourceServerExtension } from "@x402/
 import { facilitator } from "@coinbase/x402";
 import { PRODUCTS } from "./lib/products.js";
 import { RELATED } from "./lib/related.js";
+import { bazaarStanding } from "./lib/badge.js";
 const OTHERS = RELATED.filter((r) => !r.url.includes("protocol-radar"));
 
 export const PAY_TO = "0x4b5887B6E399C2E104becd01f7c406229c15891d";
@@ -68,6 +69,14 @@ app.get("/", (req, res) => res.send({ service: SERVICE.name, maker: MAKER, what:
   pay: { protocol: "x402", asset: "USDC", networks: NETWORKS }, paid: catalog(), free: ["/catalog"],
   discovery: ["/llms.txt", "/.well-known/x402", "/openapi.json", "/agents.json"], more_from_this_developer: OTHERS }));
 app.get("/catalog", (req, res) => res.send(catalog()));
+// Free: shields.io endpoint badge + the numbers behind it.
+app.get("/badge/bazaar.json", async (req, res) => {
+  try {
+    const s = await bazaarStanding();
+    res.set("Cache-Control", "public, max-age=3600").send({ schemaVersion: 1, label: "x402 Bazaar", message: `${s.listed} listed · #1 in ${s.firsts} niches`, color: "0f766e" });
+  } catch { res.send({ schemaVersion: 1, label: "x402 Bazaar", message: "unavailable", color: "lightgrey" }); }
+});
+app.get("/bazaar/standing", async (req, res) => { try { res.send(await bazaarStanding()); } catch (e) { res.status(503).send({ error: String(e.message) }); } });
 
 app.get("/.well-known/x402", (req, res) => {
   const o = origin(req);

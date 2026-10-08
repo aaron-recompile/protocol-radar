@@ -1,5 +1,9 @@
 # Protocol Radar
 
+[![x402 Bazaar](https://img.shields.io/endpoint?url=https%3A%2F%2Faaron-protocol-radar.vercel.app%2Fbadge%2Fbazaar.json)](https://aaron-protocol-radar.vercel.app/bazaar/standing)
+
+One of four small x402 data services I run alongside my Bitcoin research: [PreIPO Feed](https://preipo-feed.vercel.app/llms.txt) · [Bitcoin Technical Radar](https://btc-radar.vercel.app/llms.txt) · [Protocol Radar](https://aaron-protocol-radar.vercel.app/llms.txt) · [Data MCP](https://aaron-zhang-mcp.vercel.app/llms.txt).
+
 Pay-per-call x402 API (USDC on Base): live, machine-read status of the protocols and software agents depend on.
 Live: https://aaron-protocol-radar.vercel.app (start at /llms.txt). Built and maintained by Aaron Zhang.
 
