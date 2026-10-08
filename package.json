@@ -1,0 +1,22 @@
+{
+  "name": "protocol-radar",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "vercel-build": "node scripts/validate.mjs",
+    "validate": "node scripts/validate.mjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "type": "module",
+  "dependencies": {
+    "@coinbase/x402": "^2.1.0",
+    "@x402/core": "^2.28.0",
+    "@x402/evm": "^2.28.0",
+    "@x402/express": "^2.28.0",
+    "@x402/extensions": "^2.28.0",
+    "express": "^5.2.1"
+  }
+}
