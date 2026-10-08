@@ -1,7 +1,7 @@
 # Protocol Radar
 
 Pay-per-call x402 API (USDC on Base): live, machine-read status of the protocols and software agents depend on.
-Live: https://protocol-radar.vercel.app (start at /llms.txt). Built and maintained by Aaron Zhang.
+Live: https://aaron-protocol-radar.vercel.app (start at /llms.txt). Built and maintained by Aaron Zhang.
 
 - `/ethereum/client-releases` — 10 Ethereum execution and consensus clients
 - `/agents/framework-releases` — OpenClaw, Model Context Protocol spec, LangGraph, CrewAI

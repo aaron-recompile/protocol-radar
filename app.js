@@ -47,7 +47,7 @@ app.use((req, res, next) => (req.method === "HEAD" && PAID.has(req.path) ? res.s
 app.use(paymentMiddleware(Object.fromEntries(PRODUCTS.map((p) => [`GET ${p.path}`, {
   accepts: NETWORKS.map((network) => ({ scheme: "exact", price: `$${p.price}`, network, payTo: PAY_TO })),
   description: p.description, mimeType: "application/json",
-  serviceName: SERVICE_NAME, tags: p.tags, iconUrl: "https://protocol-radar.vercel.app/icon.svg",
+  serviceName: SERVICE_NAME, tags: p.tags, iconUrl: "https://aaron-protocol-radar.vercel.app/icon.svg",
   extensions: { ...declareDiscoveryExtension({ output: { example: { dataset: p.path.slice(1).replace("/", "-"), generated_at: "2026-10-08T00:00:00Z", sources: ["https://github.com/..."] } } }) },
 }])), server));
 
